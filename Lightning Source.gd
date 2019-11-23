@@ -21,6 +21,7 @@ func spawn_lightning(pos):
 		var candidates = lightning_node.find_neighbor_candidates()
 		for c in candidates:
 			lightning_queue.push_back(new_lightning_node(c[0], c[1]))
+	print("lightning queue empty")
 
 func _ready():
 	randomize()
