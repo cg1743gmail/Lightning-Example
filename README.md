@@ -1,2 +1,2 @@
 # Lightning-Example
-![video](https://gfycat.com/vapidsoggyiberiannase)
+![lightning](lightning.gif)
