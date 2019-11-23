@@ -1,13 +1,21 @@
 extends Node2D
 
 onready var Branch = preload("res://Branch.tscn")
+onready var MAX_LIGHTNING_NODES = get_parent().get_node("Lightning Source").MAX_LIGHTNING_NODES
 
 # product of inherited object conductivity and decay_rate
 onready var heat = 1.0
-onready var heat_decay_rate = 0.75
+onready var heat_decay_rate = 0.15
 
-onready var radius = 15
-onready var angle_direction = 90
+# controls how erratic
+# the lightning looks
+onready var radius = 45
+# control how wide of a
+# circumference you want your
+# rayscan search area to be
+onready var rayscan_fan = 45
+# controls how many branches you will
+# spawn per lightning node
 onready var rayscan_step_length = 90
 
 onready var neighbors = {}
@@ -39,7 +47,7 @@ func transfer_heat(angle):
 	)
 	return heat * (
 		(distance_to_ground / distance_to_ground_from_root())
-		* (angle / 360)
+		* angle
 		* randf()
 	)
 
@@ -56,13 +64,19 @@ func adjust_target_space(pos):
 	return target
 
 func find_neighbor_candidates():
-	var start = angle_direction - 45
-	var end = angle_direction + 45
+	# always seek ground
+	var angle_direction = rad2deg(
+		get_parent().get_node("Ground").position.angle_to_point(position)
+	)
+	var start = angle_direction - rayscan_fan
+	var end = angle_direction + rayscan_fan
 	# find the furthest object out by
 	# casting towards the current node
+	# so our lightning can propagate
+	# a reasonable distance
 	var raycast_destination = position
 	while start < end:
-		var raycast_source = get_point_on_arc(start)
+		var raycast_source = get_point_on_arc(deg2rad((start + angle_direction) / 2))
 		var candidate = find_conductive_surface(
 			raycast_source, raycast_destination
 		)
@@ -70,7 +84,7 @@ func find_neighbor_candidates():
 		var transfered_heat = transfer_heat(start)
 		if (
 			not at_ground(target)
-			and get_parent().get_child_count() <= 500
+			and get_parent().get_child_count() <= MAX_LIGHTNING_NODES
 		):
 			neighbors[[target, transfered_heat]] = create_branch(
 				target, transfered_heat
@@ -93,7 +107,7 @@ func _ready():
 	print("created new lightning")
 
 func _process(delta):
-	heat -= delta * heat_decay_rate
+	heat -= heat_decay_rate * (delta + randf())
 	for n in neighbors:
 		neighbors[n].set_width(heat * 5)
 
