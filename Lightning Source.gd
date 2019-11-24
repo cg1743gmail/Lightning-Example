@@ -1,12 +1,11 @@
 extends Node2D
 
 const STARTING_HEAT = 1.0
-const MAX_LIGHTNING_NODES = 1000
+const MAX_LIGHTNING_NODES = 500
 
 onready var LightningNode = preload("res://Lightning Node.tscn")
 
 func new_lightning_node(pos, heat):
-	print_debug(pos, heat)
 	var node = LightningNode.instance()
 	node.position = pos
 	node.heat = heat

@@ -1,9 +1,6 @@
-[gd_scene load_steps=2 format=2]
-
-[sub_resource type="Gradient" id=1]
-colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 1 )
+[gd_scene format=2]
 
 [node name="Branch" type="Line2D"]
-width = 25.0
+position = Vector2( 3, 0 )
+width = 5.0
 default_color = Color( 1, 1, 0.992157, 1 )
-gradient = SubResource( 1 )

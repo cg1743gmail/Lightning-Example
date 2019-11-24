@@ -9,14 +9,14 @@ onready var heat_decay_rate = 0.15
 
 # controls how erratic
 # the lightning looks
-onready var radius = 45
+onready var radius = 50
 # control how wide of a
 # circumference you want your
 # rayscan search area to be
 onready var rayscan_fan = 45
 # controls how many branches you will
 # spawn per lightning node
-onready var rayscan_step_length = 90
+onready var rayscan_step_length = 88
 
 onready var neighbors = {}
 
@@ -84,12 +84,13 @@ func find_neighbor_candidates():
 		var transfered_heat = transfer_heat(start)
 		if (
 			not at_ground(target)
+			and transfered_heat >= 0.25
 			and get_parent().get_child_count() <= MAX_LIGHTNING_NODES
 		):
 			neighbors[[target, transfered_heat]] = create_branch(
 				target, transfered_heat
 			)
-		start += rayscan_step_length
+		start += rayscan_step_length + rand_range(0, 15)
 	return neighbors
 
 func at_ground(pos):
